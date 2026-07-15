@@ -1,0 +1,5 @@
+<div id="outline" {% if focus_id %}data-focus="{{ focus_id }}"{% endif %}>
+  {% for item in tree %}
+    {% include "notes/_node.html" with item=item %}
+  {% endfor %}
+</div>

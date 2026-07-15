@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app-shell">
+  <aside class="sidebar" x-data="{ newDoc: false, newFolder: false }">
+    <div class="sidebar-brand"><a href="{% url 'home' %}">🧠 ezmemory</a></div>
+
+    <nav class="sidebar-nav">
+      <a href="{% url 'daily_today' %}">📅 Today</a>
+      <a href="{% url 'document_list' %}">📄 All Documents</a>
+      <a href="{% url 'queue' %}">🧠 Practice</a>
+      <a href="{% url 'card_list' %}">🗂️ Cards</a>
+      <a href="{% url 'search' %}">🔍 Search</a>
+    </nav>
+
+    <div class="sidebar-section">
+      <div class="sidebar-heading">
+        <span>Documents</span>
+        <span class="sidebar-actions">
+          <button class="icon-btn" title="New document" @click="newDoc = !newDoc">+</button>
+          <button class="icon-btn" title="New folder" @click="newFolder = !newFolder">🗀</button>
+        </span>
+      </div>
+
+      <form method="post" action="{% url 'document_create' %}" x-show="newDoc" x-cloak class="sidebar-form">
+        {% csrf_token %}
+        <input name="title" placeholder="Document title…" autocomplete="off"
+               x-effect="if (newDoc) $nextTick(() => $el.focus())">
+      </form>
+      <form method="post" action="{% url 'folder_create' %}" x-show="newFolder" x-cloak class="sidebar-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <input name="name" placeholder="Folder name…" autocomplete="off"
+               x-effect="if (newFolder) $nextTick(() => $el.focus())">
+      </form>
+
+      {% for folder in sidebar_folders %}
+        <div class="sidebar-folder" x-data="{ open: true }">
+          <button class="folder-toggle" @click="open = !open">
+            <span x-text="open ? '▾' : '▸'"></span> 📁 {{ folder.name }}
+          </button>
+          <div class="folder-docs" x-show="open">
+            {% for doc in folder.documents.all %}
+              {% if not doc.is_daily %}<a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>{% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+      {% for doc in sidebar_documents %}
+        <a class="sidebar-doc" href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="sidebar-footer">
+      <a href="{% url 'tutorials_index' %}">🎓 Tutorials</a>
+      <a href="{% url 'blog_index' %}">📰 Blog</a>
+      <form method="post" action="{% url 'logout' %}" class="logout-form">
+        {% csrf_token %}
+        <span class="sidebar-user">{{ user.username }}</span>
+        <button type="submit" class="link-btn">Sign out</button>
+      </form>
+    </div>
+  </aside>
+
+  <main class="main-pane">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="flash flash-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <div id="toast" class="toast" hidden></div>
+</div>
+{% endblock %}

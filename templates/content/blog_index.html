@@ -1,0 +1,36 @@
+{% extends "public_base.html" %}
+{% block title %}Blog — ezmemory{% endblock %}
+{% block content %}
+<div class="content-page">
+  <h1>Ideas for Better Learning</h1>
+  <p class="muted">Insights, product updates, and practical study guides.</p>
+
+  {% if featured %}
+    <a class="featured-post" href="{% url 'blog_post' featured.slug %}">
+      <div class="post-art post-art-lg" data-hue="{{ featured.pk }}"><span>{{ featured.emoji }}</span></div>
+      <div class="featured-body">
+        <span class="pill">Featured</span>
+        <h2>{{ featured.title }}</h2>
+        <p>{{ featured.description }}</p>
+        <p class="post-meta">{{ featured.published_at|date:"M j, Y" }} · {{ featured.reading_minutes }} min read</p>
+      </div>
+    </a>
+  {% endif %}
+
+  {% if posts %}
+    <h2 class="section-heading">Latest</h2>
+    <div class="post-grid">
+      {% for post in posts %}
+        <a class="post-card" href="{% url 'blog_post' post.slug %}">
+          <div class="post-art" data-hue="{{ post.pk }}"><span>{{ post.emoji }}</span></div>
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.description|truncatechars:140 }}</p>
+          <p class="post-meta">{{ post.published_at|date:"M j, Y" }} · {{ post.reading_minutes }} min read</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if not featured %}<p class="muted">No posts yet.</p>{% endif %}
+</div>
+{% endblock %}

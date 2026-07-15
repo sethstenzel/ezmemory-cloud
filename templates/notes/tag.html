@@ -1,0 +1,18 @@
+{% extends "app_base.html" %}
+{% load notes_extras %}
+{% block title %}#{{ tag }} — ezmemory{% endblock %}
+{% block content %}
+<div class="page">
+  <h1><span class="tag">#{{ tag }}</span></h1>
+  <ul class="result-list">
+    {% for node in nodes %}
+      <li>
+        <a href="{% url 'document_detail' node.document.pk %}">{{ node.document.title }}</a>
+        <div class="result-snippet">{{ node.text|node_html }}</div>
+      </li>
+    {% empty %}
+      <li class="muted">Nothing tagged #{{ tag }} yet.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "app_base.html" %}
+{% load notes_extras %}
+{% block title %}Cards — ezmemory{% endblock %}
+{% block content %}
+<div class="page">
+  <h1>🗂️ Cards</h1>
+  <p class="muted">{{ stats.total_cards }} card{{ stats.total_cards|pluralize }} · {{ stats.due_count }} due now</p>
+  <table class="card-table">
+    <thead>
+      <tr><th>Front</th><th>Back</th><th>Type</th><th>Due</th><th>Interval</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      {% for card in cards %}
+        <tr {% if card.due_at <= now %}class="row-due"{% endif %}>
+          <td>{{ card.front|card_html }}</td>
+          <td>{{ card.back|card_html }}</td>
+          <td>{{ card.get_kind_display }}</td>
+          <td>{% if card.due_at <= now %}now{% else %}{{ card.due_at|date:"M j, Y" }}{% endif %}</td>
+          <td>{{ card.interval|floatformat:1 }}d</td>
+          <td><a href="{% url 'document_detail' card.node.document.pk %}">{{ card.node.document.title }}</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="muted">No cards yet. Write <code>Front :: Back</code> in any note.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

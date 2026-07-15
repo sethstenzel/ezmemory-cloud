@@ -1,0 +1,14 @@
+{% extends "public_base.html" %}
+{% load notes_extras %}
+{% block title %}{{ article.title }} — ezmemory Tutorials{% endblock %}
+{% block content %}
+<article class="content-page article">
+  <p><a href="{% url 'tutorials_index' %}">← All tutorials</a> · {{ article.collection.emoji }} {{ article.collection.title }}</p>
+  <h1>{{ article.title }}</h1>
+  <div class="prose">{{ article.body|markdown }}</div>
+  <nav class="article-pager">
+    {% if prev_article %}<a href="{% url 'tutorial_article' prev_article.slug %}">← {{ prev_article.title }}</a>{% else %}<span></span>{% endif %}
+    {% if next_article %}<a href="{% url 'tutorial_article' next_article.slug %}">{{ next_article.title }} →</a>{% endif %}
+  </nav>
+</article>
+{% endblock %}

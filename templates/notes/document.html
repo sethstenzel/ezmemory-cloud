@@ -1,0 +1,69 @@
+{% extends "app_base.html" %}
+{% block title %}{{ document.title }} — ezmemory{% endblock %}
+{% block content %}
+<div class="doc-page" x-data="{ renaming: false, menu: false }">
+  <div class="doc-header">
+    <h1 class="doc-title" x-show="!renaming" @click="renaming = true" title="Click to rename">
+      {% if document.is_daily %}📅 {% endif %}{{ document.title }}
+    </h1>
+    <form method="post" action="{% url 'document_rename' document.pk %}" x-show="renaming" x-cloak>
+      {% csrf_token %}
+      <input class="rename-input" name="title" value="{{ document.title }}"
+             x-effect="if (renaming) $nextTick(() => { $el.focus(); $el.select() })"
+             @keydown.escape="renaming = false">
+    </form>
+
+    <div class="doc-menu">
+      <button class="icon-btn" @click="menu = !menu" title="Document options">⋯</button>
+      <div class="menu-pop" x-show="menu" x-cloak @click.outside="menu = false">
+        <form method="post" action="{% url 'document_move' document.pk %}">
+          {% csrf_token %}
+          <label class="menu-label">Folder
+            <select name="folder" onchange="this.form.submit()">
+              <option value="">(none)</option>
+              {% for folder in sidebar_folders %}
+                <option value="{{ folder.pk }}" {% if document.folder_id == folder.pk %}selected{% endif %}>{{ folder.name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </form>
+        <form method="post" action="{% url 'document_delete' document.pk %}"
+              onsubmit="return confirm('Delete this document and all of its notes and flashcards?')">
+          {% csrf_token %}
+          <button type="submit" class="danger-btn">Delete document</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <p class="editor-hint muted">
+    <kbd>Enter</kbd> new bullet · <kbd>Tab</kbd>/<kbd>Shift+Tab</kbd> indent ·
+    <code>Front :: Back</code> flashcard · <code>;;</code> both directions ·
+    <code>{% templatetag openvariable %}hidden{% templatetag closevariable %}</code> cloze · <code>[[Doc]]</code> reference · <code>#tag</code>
+  </p>
+
+  {% include "notes/_outline.html" %}
+
+  {% if backlinks %}
+    <section class="backlinks">
+      <h3>Linked from</h3>
+      <ul>
+        {% for doc in backlinks %}
+          <li><a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  {% if document.is_daily and recent_dailies %}
+    <section class="backlinks">
+      <h3>Recent daily notes</h3>
+      <ul>
+        {% for d in recent_dailies %}
+          {% if d.pk != document.pk %}<li><a href="{% url 'document_detail' d.pk %}">{{ d.title }}</a></li>{% endif %}
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+</div>
+{% endblock %}

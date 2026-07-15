@@ -1,0 +1,46 @@
+{% load notes_extras %}
+<div class="queue-stats">
+  <span title="Cards due now"><strong>{{ stats.due_count }}</strong> due</span>
+  <span title="New cards in the due pile"><strong>{{ stats.new_count }}</strong> new</span>
+  <span title="Reviews completed today"><strong>{{ stats.reviewed_today }}</strong> done today</span>
+</div>
+
+{% if card %}
+<div class="review-card" x-data="{ revealed: false }"
+     @keydown.window.space.prevent="if (!revealed) revealed = true"
+     @keydown.window="if (revealed && ['1','2','3','4'].includes($event.key)) $refs['rate' + $event.key]?.click()">
+  <div class="card-kind">{{ card.get_kind_display }} card · from
+    <a href="{% url 'document_detail' card.node.document.pk %}">{{ card.node.document.title }}</a></div>
+
+  <div class="card-face card-front">{{ card.front|card_html }}</div>
+
+  <div x-show="!revealed">
+    <button class="btn-primary reveal-btn" @click="revealed = true">Show Answer <kbd>space</kbd></button>
+  </div>
+
+  <div x-show="revealed" x-cloak>
+    <div class="card-face card-back">{{ card.back|card_html }}</div>
+    <div class="ratings">
+      <button class="rate rate-again" x-ref="rate1"
+              hx-post="{% url 'queue_answer' card.pk %}" hx-vals='{"rating": 0}'
+              hx-target="#review-area" hx-swap="innerHTML">Again <kbd>1</kbd></button>
+      <button class="rate rate-hard" x-ref="rate2"
+              hx-post="{% url 'queue_answer' card.pk %}" hx-vals='{"rating": 3}'
+              hx-target="#review-area" hx-swap="innerHTML">Hard <kbd>2</kbd></button>
+      <button class="rate rate-good" x-ref="rate3"
+              hx-post="{% url 'queue_answer' card.pk %}" hx-vals='{"rating": 4}'
+              hx-target="#review-area" hx-swap="innerHTML">Good <kbd>3</kbd></button>
+      <button class="rate rate-easy" x-ref="rate4"
+              hx-post="{% url 'queue_answer' card.pk %}" hx-vals='{"rating": 5}'
+              hx-target="#review-area" hx-swap="innerHTML">Easy <kbd>4</kbd></button>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="all-done">
+  <div class="all-done-emoji">🎉</div>
+  <h2>All caught up!</h2>
+  <p class="muted">No cards are due right now. Add flashcards to your notes with
+    <code>Front :: Back</code> and they'll show up here when it's time to review.</p>
+</div>
+{% endif %}

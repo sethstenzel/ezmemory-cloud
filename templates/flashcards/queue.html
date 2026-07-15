@@ -1,0 +1,10 @@
+{% extends "app_base.html" %}
+{% block title %}Practice — ezmemory{% endblock %}
+{% block content %}
+<div class="page queue-page">
+  <h1>🧠 Practice</h1>
+  <div id="review-area" hx-get="{% url 'queue_next' %}" hx-trigger="load" hx-swap="innerHTML">
+    <p class="muted">Loading queue…</p>
+  </div>
+</div>
+{% endblock %}

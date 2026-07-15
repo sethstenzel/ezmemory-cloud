@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}ezmemory — Notes that quiz you back{% endblock %}
+{% block body %}
+<header class="topnav topnav-dark">
+  <a class="brand" href="{% url 'login' %}">🧠 ezmemory</a>
+  <nav>
+    <a href="{% url 'blog_index' %}">Blog</a>
+    <a href="{% url 'tutorials_index' %}">Tutorials</a>
+    <a href="{% url 'signup' %}">Sign up</a>
+  </nav>
+</header>
+
+<div class="landing">
+  <section class="landing-pitch">
+    <p class="eyebrow">Notes · flashcards · spaced repetition</p>
+    <h1 class="landing-title">Notes that quiz&nbsp;you back.</h1>
+    <p class="landing-sub">
+      ezmemory is an outline notebook where any line becomes a flashcard.
+      A built-in practice queue resurfaces each card right before you'd forget it —
+      so what you write down is what you actually remember.
+    </p>
+
+    <div class="demo">
+      <div class="demo-note">
+        <div class="demo-note-head">📄 Cell Biology — today's note</div>
+        <div class="demo-line"><span class="bullet"></span>Mitochondria produce most of the cell's ATP</div>
+        <div class="demo-line demo-line-indent"><span class="bullet"></span>What is ATP? <span class="card-sep sep-fwd">→</span> The cell's main energy currency</div>
+        <div class="demo-line demo-line-indent"><span class="bullet"></span>Cristae are folds of the <span class="cloze">inner membrane</span></div>
+      </div>
+      <div class="demo-arrow" aria-hidden="true">⤵ that <code>::</code> line is now a flashcard</div>
+      <div class="demo-card">
+        <div class="demo-card-kind">Forward card · due today</div>
+        <div class="demo-card-front">What is ATP?</div>
+        <div class="demo-card-back">The cell's main energy currency</div>
+        <div class="demo-ratings">
+          <span class="rate rate-again">Again</span><span class="rate rate-hard">Hard</span><span class="rate rate-good">Good</span><span class="rate rate-easy">Easy</span>
+        </div>
+      </div>
+    </div>
+
+    <ul class="landing-points">
+      <li><strong>Write once.</strong> Type <code>Front :: Back</code> in any bullet — the card keeps its context forever.</li>
+      <li><strong>Practice daily.</strong> An SM-2 scheduler decides when each card returns; you just rate your recall.</li>
+      <li><strong>Stay focused.</strong> Text-first and distraction-free — no feeds, no clutter, just your notes and today's queue.</li>
+    </ul>
+  </section>
+
+  <section class="landing-auth">
+    <div class="auth-card landing-auth-card">
+      <h2>Sign in</h2>
+      <p class="muted">Pick up where you left off.</p>
+      {% if form.errors %}<p class="form-error">Your username and password didn't match. Please try again.</p>{% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <label>Username <input type="text" name="username" autofocus autocomplete="username" required></label>
+        <label>Password <input type="password" name="password" autocomplete="current-password" required></label>
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="btn-primary">Sign in</button>
+      </form>
+      <p class="muted auth-alt">New here? <a href="{% url 'signup' %}">Create a local account</a> — it takes ten seconds.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "public_base.html" %}
+{% block title %}Tutorials — ezmemory{% endblock %}
+{% block content %}
+<div class="content-page">
+  <h1>Tutorials</h1>
+  <p class="muted">Learn how to get the most out of ezmemory, from first note to long-term mastery.</p>
+
+  <div class="collection-grid">
+    {% for collection in collections %}
+      <section class="collection-card">
+        <h2><span class="collection-emoji">{{ collection.emoji }}</span> {{ collection.title }}</h2>
+        <p class="muted">{{ collection.description }}</p>
+        <ul class="article-list">
+          {% for article in collection.articles.all %}
+            <li>
+              <a href="{% url 'tutorial_article' article.slug %}">{{ article.title }}</a>
+              {% if article.description %}<p class="muted">{{ article.description }}</p>{% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% empty %}
+      <p class="muted">No tutorials yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

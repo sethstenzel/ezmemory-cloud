@@ -1,0 +1,53 @@
+{% extends "app_base.html" %}
+{% block title %}All Documents — ezmemory{% endblock %}
+{% block content %}
+<div class="page">
+  <h1>All Documents</h1>
+
+  {% if sidebar_folders %}
+    {% for folder in sidebar_folders %}
+      <section class="doc-group">
+        <h3>📁 {{ folder.name }}
+          <form method="post" action="{% url 'folder_delete' folder.pk %}" class="inline-form"
+                onsubmit="return confirm('Delete folder? Documents inside will be kept.')">
+            {% csrf_token %}<button class="link-btn muted" type="submit">delete</button>
+          </form>
+        </h3>
+        <ul class="doc-list">
+          {% for doc in folder.documents.all %}
+            <li><a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>
+                <span class="muted">updated {{ doc.updated_at|date:"M j, Y" }}</span></li>
+          {% empty %}
+            <li class="muted">Empty folder</li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endfor %}
+  {% endif %}
+
+  <section class="doc-group">
+    <h3>📄 Documents</h3>
+    <ul class="doc-list">
+      {% for doc in documents %}
+        {% if not doc.folder %}
+          <li><a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>
+              <span class="muted">updated {{ doc.updated_at|date:"M j, Y" }}</span></li>
+        {% endif %}
+      {% empty %}
+        <li class="muted">No documents yet — create one from the sidebar.</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="doc-group">
+    <h3>📅 Daily Notes</h3>
+    <ul class="doc-list">
+      {% for doc in dailies %}
+        <li><a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a></li>
+      {% empty %}
+        <li class="muted">No daily notes yet.</li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+{% endblock %}

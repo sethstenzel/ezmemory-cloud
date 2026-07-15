@@ -1,0 +1,25 @@
+{% load notes_extras %}
+{% if query %}
+  {% if documents %}
+    <h3>Documents</h3>
+    <ul class="result-list">
+      {% for doc in documents %}
+        <li><a href="{% url 'document_detail' doc.pk %}">{% if doc.is_daily %}📅{% else %}📄{% endif %} {{ doc.title }}</a></li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if nodes %}
+    <h3>Notes</h3>
+    <ul class="result-list">
+      {% for node in nodes %}
+        <li>
+          <a href="{% url 'document_detail' node.document.pk %}">{{ node.document.title }}</a>
+          <div class="result-snippet">{{ node.text|node_html }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% if not documents and not nodes %}
+    <p class="muted">No results for “{{ query }}”.</p>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,13 @@
+{% extends "app_base.html" %}
+{% block title %}Search — ezmemory{% endblock %}
+{% block content %}
+<div class="page">
+  <h1>Search</h1>
+  <input class="search-input" type="search" name="q" value="{{ query }}" placeholder="Search notes and documents…"
+         autofocus autocomplete="off"
+         hx-get="{% url 'search_results' %}"
+         hx-trigger="input changed delay:250ms, load"
+         hx-target="#search-results">
+  <div id="search-results"></div>
+</div>
+{% endblock %}

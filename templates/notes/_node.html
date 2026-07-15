@@ -1,0 +1,28 @@
+{% load notes_extras %}
+<div class="node" data-id="{{ item.node.id }}">
+  <div class="node-row" data-id="{{ item.node.id }}">
+    {% if item.has_children %}
+      <button class="collapse-btn" tabindex="-1"
+              hx-post="{% url 'node_toggle' item.node.id %}"
+              hx-target="#outline" hx-swap="outerHTML">{% if item.node.collapsed %}▸{% else %}▾{% endif %}</button>
+    {% else %}
+      <span class="collapse-spacer"></span>
+    {% endif %}
+    <span class="bullet{% if item.node.collapsed %} bullet-collapsed{% endif %}"></span>
+    <div class="node-display{% if not item.node.text %} node-empty{% endif %}">{{ item.node.text|node_html }}</div>
+    <textarea class="node-input" rows="1" spellcheck="false" hidden
+              data-id="{{ item.node.id }}"
+              data-save-url="{% url 'node_save' item.node.id %}"
+              data-create-url="{% url 'node_create' item.node.id %}"
+              data-indent-url="{% url 'node_indent' item.node.id %}"
+              data-outdent-url="{% url 'node_outdent' item.node.id %}"
+              data-delete-url="{% url 'node_delete' item.node.id %}">{{ item.node.text }}</textarea>
+  </div>
+  {% if not item.node.collapsed and item.children %}
+    <div class="node-children">
+      {% for child in item.children %}
+        {% include "notes/_node.html" with item=child %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,12 @@
+{% extends "public_base.html" %}
+{% load notes_extras %}
+{% block title %}{{ post.title }} — ezmemory Blog{% endblock %}
+{% block content %}
+<article class="content-page article">
+  <p><a href="{% url 'blog_index' %}">← All posts</a></p>
+  <div class="post-art post-art-lg" data-hue="{{ post.pk }}"><span>{{ post.emoji }}</span></div>
+  <h1>{{ post.title }}</h1>
+  <p class="post-meta">By {{ post.author.username }} · {{ post.published_at|date:"F j, Y" }} · {{ post.reading_minutes }} min read</p>
+  <div class="prose">{{ post.body|markdown }}</div>
+</article>
+{% endblock %}
