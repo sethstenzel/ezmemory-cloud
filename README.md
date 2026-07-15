@@ -109,6 +109,15 @@ so PDFs, images, and video are rejected at the framework level. On top of that:
 
 Quota violations surface to users as inline error messages, not silent failures.
 
+**Data safety.** `db.sqlite3` is live user data — treat it that way:
+
+- `uv run manage.py backupdb` snapshots it to `backups/db-<timestamp>.sqlite3`
+  (keeps the newest 30; schedule it daily alongside `send_due_reminders`).
+- `manage.py flush` is guarded: it refuses to run unless `EZMEMORY_ALLOW_FLUSH=1`
+  is set, so the database can't be wiped by a reflexive command.
+- Set `EZMEMORY_DB_PATH` to point the app (and any test scripts) at a throwaway
+  copy of the database instead of the real one.
+
 **Deployment (ezmemory.cloud).** Set `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0`,
 `DJANGO_ALLOWED_HOSTS=ezmemory.cloud`, and (if needed)
 `DJANGO_CSRF_TRUSTED_ORIGINS=https://ezmemory.cloud` in the environment. Run behind a

@@ -222,3 +222,6 @@ staticfiles/
 
 # Web Push VAPID private key
 vapid_private_key.pem
+
+# Database backups
+backups/

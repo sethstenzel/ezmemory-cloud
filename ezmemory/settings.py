@@ -86,10 +86,12 @@ WSGI_APPLICATION = "ezmemory.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# EZMEMORY_DB_PATH lets tests and experiments point at a throwaway copy of the
+# database instead of the live one.
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "NAME": os.environ.get("EZMEMORY_DB_PATH", BASE_DIR / "db.sqlite3"),
     }
 }
 
