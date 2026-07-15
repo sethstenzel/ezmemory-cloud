@@ -219,3 +219,6 @@ __marimo__/
 
 # Django collected static
 staticfiles/
+
+# Web Push VAPID private key
+vapid_private_key.pem

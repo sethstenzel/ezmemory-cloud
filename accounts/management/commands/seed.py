@@ -7,7 +7,9 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
+from accounts.models import profile_for
 from content.models import BlogPost, TutorialArticle, TutorialCollection
 from flashcards.sync import sync_node_cards
 from notes.models import Document, Folder, Node
@@ -38,6 +40,11 @@ class Command(BaseCommand):
             self.stdout.write(f"Created user {DEFAULT_USERNAME}")
         else:
             self.stdout.write(f"User {DEFAULT_USERNAME} already exists")
+        profile = profile_for(user)
+        if not profile.is_subscribed:
+            profile.is_subscribed = True
+            profile.subscribed_at = timezone.now()
+            profile.save(update_fields=["is_subscribed", "subscribed_at"])
         return user
 
     def seed_notes(self, user):

@@ -1,11 +1,12 @@
-# ezmemory 🧠
+# ezmemory 🧠 — hosted at [ezmemory.cloud](https://ezmemory.cloud)
 
 A note-taking and spaced-repetition study service. Subscribers take outline-style notes,
 turn any bullet into a flashcard with inline syntax, and practice with a
-spaced-repetition queue.
+spaced-repetition queue. **30-day free trial, then $1/month.**
 
 Built with **Django** (backend), **htmx** + **Alpine.js** (frontend, vendored locally —
-no CDN dependencies), and SQLite for storage.
+no CDN dependencies), and SQLite for storage. Push notifications are built in via
+Web Push/VAPID — no third-party notification service.
 
 See [app_features.md](app_features.md) for the full feature requirements list.
 
@@ -58,6 +59,35 @@ python -m venv .venv
 - `[[Document]]` → reference (auto-creates the document) · `#tag` → clickable tag
 - `**bold**`, `*italic*`, `` `code` ``
 
+## Trial & subscriptions
+
+Every new account starts a **30-day free trial** (no card required). When the trial ends,
+the account is redirected to `/subscribe/` — all data is kept, and access resumes the
+moment the subscription is activated. Until online checkout is integrated, activate
+subscribers in the Django admin (Profiles → select → "Mark selected profiles as
+subscribed"). Staff accounts are never gated. Trial state shows in the sidebar
+(days-left chip) and on the Settings page.
+
+## Push notifications (phones & desktops)
+
+Built-in Web Push (VAPID) — works on desktop Chrome/Edge/Firefox, Android, and iOS
+(16.4+, after the user adds the app to their home screen; the site ships a PWA manifest
+and service worker for exactly that).
+
+- Users enable notifications per device on **Settings → Push notifications**, and can
+  send themselves a test notification.
+- The **daily study reminder** ("You have N cards ready for review") is sent by:
+  ```bash
+  uv run manage.py send_due_reminders
+  ```
+  Schedule it once or twice daily via cron / Windows Task Scheduler. Only users who
+  enabled the reminder toggle and registered a device are notified.
+- VAPID keys are auto-generated on first use into `vapid_private_key.pem` (gitignored) —
+  keep it with your backups, since subscriptions are bound to it. Set
+  `EZMEMORY_VAPID_CLAIM` (default `mailto:admin@ezmemory.cloud`).
+- Web Push requires HTTPS in production (localhost works for development). Devices are
+  capped at 10 per account; dead subscriptions are pruned automatically.
+
 ## Security & abuse protection (operator notes)
 
 **Password storage.** Passwords are hashed with **Argon2id** (OWASP's recommended
@@ -79,7 +109,9 @@ so PDFs, images, and video are rejected at the framework level. On top of that:
 
 Quota violations surface to users as inline error messages, not silent failures.
 
-**Deployment.** Set `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0`, and `DJANGO_ALLOWED_HOSTS`
-(comma-separated) in the environment for production. Run behind a reverse proxy with
-TLS; add proxy-level rate limiting for defense in depth. All data lives in `db.sqlite3` —
-back that file up.
+**Deployment (ezmemory.cloud).** Set `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0`,
+`DJANGO_ALLOWED_HOSTS=ezmemory.cloud`, and (if needed)
+`DJANGO_CSRF_TRUSTED_ORIGINS=https://ezmemory.cloud` in the environment. Run behind a
+reverse proxy with TLS (required for Web Push); add proxy-level rate limiting for
+defense in depth. All data lives in `db.sqlite3`, plus `vapid_private_key.pem` — back
+both up.

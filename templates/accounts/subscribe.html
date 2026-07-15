@@ -1,0 +1,29 @@
+{% extends "public_base.html" %}
+{% block title %}Subscribe — ezmemory.cloud{% endblock %}
+{% block content %}
+<div class="auth-card subscribe-card">
+  {% if profile.is_subscribed %}
+    <h1>You're subscribed 🎉</h1>
+    <p class="muted">Your subscription is active. Enjoy ezmemory!</p>
+    <p><a class="btn-primary" href="{% url 'home' %}">Open the app</a></p>
+  {% else %}
+    {% if profile.on_trial %}
+      <h1>{{ profile.trial_days_left }} day{{ profile.trial_days_left|pluralize }} left in your trial</h1>
+      <p class="muted">Keep everything you've built — notes, cards, and your review schedule — for less than a coffee a year.</p>
+    {% else %}
+      <h1>Your free trial has ended</h1>
+      <p class="muted">All of your notes and flashcards are safe. Subscribe to pick up right where you left off.</p>
+    {% endif %}
+    <div class="price-box">
+      <div class="price">$1<span>/month</span></div>
+      <ul class="price-points">
+        <li>Unlimited practice, every device</li>
+        <li>Push reminders so you never miss a review</li>
+        <li>Cancel anytime</li>
+      </ul>
+    </div>
+    <a class="btn-primary" href="mailto:billing@ezmemory.cloud?subject=Subscribe%20({{ user.username }})">Subscribe — $1/month</a>
+    <p class="muted auth-alt">Checkout is handled by email while we finish online payments. We activate accounts within a day.</p>
+  {% endif %}
+</div>
+{% endblock %}

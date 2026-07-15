@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}ezmemory — Notes that quiz you back{% endblock %}
+{% block title %}ezmemory.cloud — Notes that quiz you back{% endblock %}
 {% block body %}
 <header class="topnav topnav-dark">
-  <a class="brand" href="{% url 'login' %}">🧠 ezmemory</a>
+  <a class="brand" href="{% url 'login' %}">🧠 ezmemory.cloud</a>
   <nav>
     <a href="{% url 'blog_index' %}">Blog</a>
     <a href="{% url 'tutorials_index' %}">Tutorials</a>
-    <a href="{% url 'signup' %}">Sign up</a>
+    <a href="{% url 'signup' %}">Start free trial</a>
   </nav>
 </header>
 
@@ -42,7 +42,9 @@
       <li><strong>Write once.</strong> Type <code>Front :: Back</code> in any bullet — the card keeps its context forever.</li>
       <li><strong>Practice daily.</strong> An SM-2 scheduler decides when each card returns; you just rate your recall.</li>
       <li><strong>Stay focused.</strong> Text-first and distraction-free — no feeds, no clutter, just your notes and today's queue.</li>
+      <li><strong>Never miss a review.</strong> Push reminders on your phone and desktop when cards come due.</li>
     </ul>
+    <p class="landing-price">Free for 30 days · $1/month after · cancel anytime</p>
   </section>
 
   <section class="landing-auth">
@@ -57,7 +59,7 @@
         <input type="hidden" name="next" value="{{ next }}">
         <button type="submit" class="btn-primary">Sign in</button>
       </form>
-      <p class="muted auth-alt">New here? <a href="{% url 'signup' %}">Create a local account</a> — it takes ten seconds.</p>
+      <p class="muted auth-alt">New here? <a href="{% url 'signup' %}">Start your free 30-day trial</a> — then just $1/month.</p>
     </div>
   </section>
 </div>

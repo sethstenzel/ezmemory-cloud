@@ -1,0 +1,7 @@
+<label class="toggle-label">
+  <input type="checkbox" {% if profile.reminders_enabled %}checked{% endif %}
+         hx-post="{% url 'toggle_reminders' %}" hx-trigger="change"
+         hx-target="#reminders-toggle" hx-swap="innerHTML"
+         hx-vals='js:{enabled: event.target.checked ? "1" : "0"}'>
+  Daily reminder when cards are due
+</label>

@@ -1,8 +1,12 @@
 from django.conf import settings
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.core.cache import cache
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
+
+from .models import Profile, profile_for
 
 
 def client_ip(request):
@@ -27,6 +31,7 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Profile.objects.create(user=user)  # starts the 30-day trial
             try:
                 cache.add(throttle_key, 0, timeout=3600)
                 cache.incr(throttle_key)
@@ -37,3 +42,22 @@ def signup(request):
     else:
         form = UserCreationForm()
     return render(request, "accounts/signup.html", {"form": form})
+
+
+@login_required
+def subscribe(request):
+    return render(request, "accounts/subscribe.html", {"profile": profile_for(request.user)})
+
+
+@login_required
+def user_settings(request):
+    return render(request, "accounts/settings.html", {"profile": profile_for(request.user)})
+
+
+@login_required
+@require_POST
+def toggle_reminders(request):
+    profile = profile_for(request.user)
+    profile.reminders_enabled = request.POST.get("enabled") == "1"
+    profile.save(update_fields=["reminders_enabled"])
+    return render(request, "accounts/_reminders_toggle.html", {"profile": profile})

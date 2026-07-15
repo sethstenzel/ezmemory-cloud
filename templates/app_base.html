@@ -2,7 +2,7 @@
 {% block body %}
 <div class="app-shell">
   <aside class="sidebar" x-data="{ newDoc: false, newFolder: false }">
-    <div class="sidebar-brand"><a href="{% url 'home' %}">🧠 ezmemory</a></div>
+    <div class="sidebar-brand"><a href="{% url 'home' %}">🧠 ezmemory.cloud</a></div>
 
     <nav class="sidebar-nav">
       <a href="{% url 'daily_today' %}">📅 Today</a>
@@ -51,6 +51,12 @@
     </div>
 
     <div class="sidebar-footer">
+      {% if user.profile and not user.profile.is_subscribed and not user.is_staff %}
+        <a class="trial-chip" href="{% url 'subscribe' %}">
+          {% if user.profile.on_trial %}⏳ Trial: {{ user.profile.trial_days_left }} day{{ user.profile.trial_days_left|pluralize }} left{% else %}⚠️ Trial ended — subscribe{% endif %}
+        </a>
+      {% endif %}
+      <a href="{% url 'user_settings' %}">⚙️ Settings</a>
       <a href="{% url 'tutorials_index' %}">🎓 Tutorials</a>
       <a href="{% url 'blog_index' %}">📰 Blog</a>
       <form method="post" action="{% url 'logout' %}" class="logout-form">

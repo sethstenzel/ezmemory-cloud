@@ -6,12 +6,24 @@ from accounts import views as accounts_views
 from content import views as content_views
 from flashcards import views as flashcards_views
 from notes import views as notes_views
+from push import views as push_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    # Auth
+    # Auth & account
     path("signup/", accounts_views.signup, name="signup"),
+    path("subscribe/", accounts_views.subscribe, name="subscribe"),
+    path("settings/", accounts_views.user_settings, name="user_settings"),
+    path("settings/reminders/", accounts_views.toggle_reminders, name="toggle_reminders"),
+
+    # Push notifications & PWA
+    path("push/key/", push_views.vapid_public_key, name="push_key"),
+    path("push/subscribe/", push_views.subscribe, name="push_subscribe"),
+    path("push/unsubscribe/", push_views.unsubscribe, name="push_unsubscribe"),
+    path("push/test/", push_views.send_test, name="push_test"),
+    path("sw.js", push_views.service_worker, name="service_worker"),
+    path("manifest.webmanifest", push_views.manifest, name="manifest"),
     path(
         "login/",
         auth_views.LoginView.as_view(template_name="accounts/login.html", redirect_authenticated_user=True),

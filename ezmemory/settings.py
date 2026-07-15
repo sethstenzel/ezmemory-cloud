@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "notes",
     "flashcards",
     "content",
+    "push",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "accounts.middleware.TrialAccessMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -173,3 +175,13 @@ EZMEMORY_MAX_DOC_TITLE_CHARS = 200
 
 # Signup throttling: max new accounts per source IP per hour.
 EZMEMORY_SIGNUPS_PER_IP_PER_HOUR = 5
+
+# Push notifications (Web Push / VAPID). Keys are auto-generated on first use
+# into BASE_DIR/vapid_private_key.pem (gitignored).
+EZMEMORY_VAPID_CLAIM = os.environ.get("EZMEMORY_VAPID_CLAIM", "mailto:admin@ezmemory.cloud")
+EZMEMORY_MAX_PUSH_DEVICES_PER_USER = 10
+
+# Production origin (the service is hosted at https://ezmemory.cloud).
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    "DJANGO_CSRF_TRUSTED_ORIGINS", "https://ezmemory.cloud"
+).split(",")

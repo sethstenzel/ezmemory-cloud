@@ -1,10 +1,15 @@
 # ezmemory — Feature Requirements
 
-A subscription note-taking and spaced-repetition study service. All features run on a
-single server against a SQLite database — no external services, no AI.
+A subscription note-taking and spaced-repetition study service, hosted at
+ezmemory.cloud. All features run on a single server against a SQLite database —
+no external services, no AI.
 
-## 1. Accounts & Authentication
+## 1. Accounts, Trial & Authentication
 - [x] Create new user accounts (username + password sign-up)
+- [x] 30-day free trial for every new account; $1/month subscription after
+- [x] Expired trials are locked out (data preserved) and routed to the subscribe page;
+      admins activate subscriptions from the Django admin
+- [x] Trial status visible in the sidebar and on the Settings page
 - [x] Sign in / sign out; landing page doubles as the product pitch
 - [x] Passwords hashed with Argon2id; Django password validators enforced at signup
 - [x] All personal content (notes, flashcards, review history) is scoped per user
@@ -64,7 +69,14 @@ single server against a SQLite database — no external services, no AI.
 - [x] Posts ordered newest first; full post pages rendered from Markdown-style text
 - [x] Staff users can author posts via the Django admin
 
-## 10. Cost & Abuse Controls
+## 10. Push Notifications (phones & desktops)
+- [x] Built-in Web Push (VAPID) — desktop browsers, Android, and iOS home-screen installs
+- [x] PWA manifest + service worker so the app can be installed on mobile
+- [x] Per-device enable/disable and test notification on the Settings page
+- [x] Daily due-card reminder via a schedulable management command, opt-in per user
+- [x] Device cap per account; dead subscriptions pruned automatically
+
+## 11. Cost & Abuse Controls
 The service is text-only by design so that no subscriber can run up storage costs:
 
 - [x] No file uploads of any kind — no PDFs, images, audio, or video; no upload

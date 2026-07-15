@@ -1,0 +1,61 @@
+{% extends "app_base.html" %}
+{% block title %}Settings — ezmemory.cloud{% endblock %}
+{% block content %}
+<div class="page settings-page">
+  <h1>⚙️ Settings</h1>
+
+  <section class="settings-card">
+    <h2>Subscription</h2>
+    {% if profile.is_subscribed %}
+      <p>Your subscription is <strong>active</strong>. Thanks for being a member!</p>
+    {% elif profile.on_trial %}
+      <p>You're on a free trial — <strong>{{ profile.trial_days_left }} day{{ profile.trial_days_left|pluralize }} left</strong>.</p>
+      <p><a class="btn-primary" href="{% url 'subscribe' %}">Subscribe — $1/month</a></p>
+    {% else %}
+      <p>Your free trial has ended.</p>
+      <p><a class="btn-primary" href="{% url 'subscribe' %}">Subscribe — $1/month</a></p>
+    {% endif %}
+  </section>
+
+  <section class="settings-card" x-data="pushSettings()" x-init="refresh()">
+    <h2>Push notifications</h2>
+    <p class="muted">Get study reminders on this phone, tablet, or computer — even when the app is closed.</p>
+
+    <template x-if="state === 'unsupported'">
+      <p class="form-error">This browser doesn't support push notifications.</p>
+    </template>
+    <template x-if="state === 'denied'">
+      <p class="form-error">Notifications are blocked for this site. Allow them in your browser's site settings, then reload.</p>
+    </template>
+
+    <div class="settings-actions" x-show="state === 'disabled' || state === 'enabled'">
+      <button class="btn-primary" x-show="state === 'disabled'" @click="enable()">Enable on this device</button>
+      <button class="btn-secondary" x-show="state === 'enabled'" @click="disable()">Disable on this device</button>
+      <button class="btn-secondary" x-show="state === 'enabled'" @click="test()">Send a test notification</button>
+    </div>
+    <p class="muted" x-show="state === 'enabled'">✅ This device receives notifications.</p>
+    <p class="form-error" x-show="error" x-text="error"></p>
+  </section>
+
+  <section class="settings-card">
+    <h2>Daily study reminder</h2>
+    <p class="muted">Once notifications are enabled, we'll nudge you when cards are waiting.</p>
+    <div id="reminders-toggle">
+      {% include "accounts/_reminders_toggle.html" %}
+    </div>
+  </section>
+</div>
+
+<script>
+function pushSettings() {
+  return {
+    state: 'loading',
+    error: '',
+    async refresh() { try { this.state = await window.ezPush.status(); } catch (e) { this.state = 'unsupported'; } },
+    async enable() { this.error = ''; try { await window.ezPush.enable(); } catch (e) { this.error = e.message; } this.refresh(); },
+    async disable() { this.error = ''; try { await window.ezPush.disable(); } catch (e) { this.error = e.message; } this.refresh(); },
+    async test() { this.error = ''; try { await window.ezPush.test(); } catch (e) { this.error = e.message; } },
+  };
+}
+</script>
+{% endblock %}
