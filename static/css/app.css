@@ -332,14 +332,19 @@ a.ref { border-bottom: 1px dashed var(--accent); }
 
 .landing {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  grid-template-columns: 1fr 1fr;
   min-height: calc(100vh - 57px);
 }
+/* Both halves keep their full-bleed backgrounds, but their content gravitates
+   toward the center seam so the page reads as one centered composition. */
 .landing-pitch {
   background: var(--sidebar-bg);
   color: #b7bfd2;
-  padding: 3.5rem 3.5rem 4rem;
+  padding: 3.5rem 4rem 4rem;
+  display: flex;
+  justify-content: flex-end;
 }
+.pitch-inner { max-width: 34rem; }
 .eyebrow {
   font-size: .72rem; text-transform: uppercase; letter-spacing: .14em;
   color: #8b93a7; margin: 0 0 1.2rem;
@@ -396,7 +401,7 @@ a.ref { border-bottom: 1px dashed var(--accent); }
 .landing-points li { padding: .45rem 0; }
 .landing-points strong { color: #fff; }
 
-.landing-auth { display: flex; align-items: flex-start; justify-content: center; padding: 3.5rem 2rem; }
+.landing-auth { display: flex; align-items: flex-start; justify-content: flex-start; padding: 3.5rem 4rem; }
 .landing-auth-card { margin: 2rem 0 0; width: 100%; max-width: 380px; }
 .landing-auth-card h2 { margin: 0 0 .2rem; }
 .auth-alt { margin-top: 1.2rem; }
@@ -404,9 +409,9 @@ a.ref { border-bottom: 1px dashed var(--accent); }
 
 @media (max-width: 900px) {
   .landing { grid-template-columns: 1fr; }
-  .landing-auth { order: -1; padding: 1.5rem 1.2rem 0; }
+  .landing-auth { order: -1; padding: 1.5rem 1.2rem 0; justify-content: center; }
   .landing-auth-card { margin: 0; box-shadow: none; }
-  .landing-pitch { padding: 2.2rem 1.4rem 3rem; margin-top: 1.5rem; }
+  .landing-pitch { padding: 2.2rem 1.4rem 3rem; margin-top: 1.5rem; justify-content: center; }
 }
 
 @media (max-width: 760px) {
