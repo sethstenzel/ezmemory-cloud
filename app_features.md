@@ -26,9 +26,10 @@ no external services, no AI.
 - [x] Inline `#tags` for lightweight labeling, rendered as clickable chips
 - [x] Basic inline formatting: `**bold**`, `*italic*`, `` `code` ``
 
-## 3. Documents, Folders & Daily Notes
+## 3. Documents, Topics & Daily Notes
 - [x] Create, rename, and delete documents
-- [x] Organize documents into folders (sidebar tree)
+- [x] Organize documents into topics (sidebar tree; topics nest via drag & drop,
+      deletion moves contents up a level, creation targets the selected topic)
 - [x] Daily Documents: an auto-created note per calendar day for quick capture
 - [x] Sidebar navigation: pinned sections for Daily Notes, All Documents, Flashcards, Search
 
@@ -42,6 +43,9 @@ no external services, no AI.
 
 ## 5. Spaced Repetition & Practice Queue
 - [x] Practice queue that surfaces cards when they are due (SM-2 style scheduling algorithm)
+- [x] Practice sessions run in a focused modal
+- [x] Practice everything, or launch a topic- or subtopic-specific session
+      (topic sessions include all nested subtopics; per-topic due counts shown)
 - [x] Review flow: show front → reveal answer → rate recall (Again / Hard / Good / Easy)
 - [x] Rating adjusts each card's ease and interval; failed cards repeat in the same session
 - [x] Daily study stats: due count, new count, reviews completed today
@@ -82,7 +86,7 @@ The service is text-only by design so that no subscriber can run up storage cost
 - [x] No file uploads of any kind — no PDFs, images, audio, or video; no upload
       endpoints or media storage exist, and Django's upload handlers are disabled
 - [x] Request bodies capped at 256 KB
-- [x] Per-account quotas: bullets, documents, folders, bullet length, title length
+- [x] Per-account quotas: bullets, documents, topics, bullet length, title length
 - [x] Review history pruned per card
 - [x] Signup rate-limited per IP
 

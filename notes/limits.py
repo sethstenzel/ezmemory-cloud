@@ -28,4 +28,4 @@ def folder_quota_left(user):
 
 NODE_QUOTA_MESSAGE = "You've reached the note limit for your account, so this bullet wasn't added. Delete some notes to free up space."
 DOCUMENT_QUOTA_MESSAGE = "You've reached the document limit for your account. Delete a document to create a new one."
-FOLDER_QUOTA_MESSAGE = "You've reached the folder limit for your account. Delete a folder to create a new one."
+FOLDER_QUOTA_MESSAGE = "You've reached the topic limit for your account. Delete a topic to create a new one."

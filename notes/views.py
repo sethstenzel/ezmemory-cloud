@@ -233,9 +233,9 @@ def folder_move(request, pk):
     if parent_id:
         parent = get_object_or_404(Folder, pk=parent_id, user=request.user)
         if parent.pk == folder.pk or any(a.pk == folder.pk for a in parent.ancestors()):
-            return quota_denied("A folder can't be moved into itself or one of its subfolders.")
+            return quota_denied("A topic can't be moved into itself or one of its subtopics.")
         if sum(1 for _ in parent.ancestors()) >= 9:
-            return quota_denied("Folders can't be nested this deep.")
+            return quota_denied("Topics can't be nested this deep.")
         folder.parent = parent
     else:
         folder.parent = None

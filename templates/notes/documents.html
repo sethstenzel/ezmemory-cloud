@@ -9,7 +9,7 @@
       <section class="doc-group">
         <h3>📁 {{ folder.name }}
           <form method="post" action="{% url 'folder_delete' folder.pk %}" class="inline-form"
-                onsubmit="return confirm('Delete folder? Documents inside will be kept.')">
+                onsubmit="return confirm('Delete topic? Documents inside will be kept.')">
             {% csrf_token %}<button class="link-btn muted" type="submit">delete</button>
           </form>
         </h3>
@@ -18,7 +18,7 @@
             <li><a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>
                 <span class="muted">updated {{ doc.updated_at|date:"M j, Y" }}</span></li>
           {% empty %}
-            <li class="muted">Empty folder</li>
+            <li class="muted">Empty topic</li>
           {% endfor %}
         </ul>
       </section>

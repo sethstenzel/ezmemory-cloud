@@ -18,7 +18,7 @@
       <div class="menu-pop" x-show="menu" x-cloak @click.outside="menu = false">
         <form method="post" action="{% url 'document_move' document.pk %}">
           {% csrf_token %}
-          <label class="menu-label">Folder
+          <label class="menu-label">Topic
             <select name="folder" onchange="this.form.submit()">
               <option value="">(none)</option>
               {% for folder in sidebar_folders %}

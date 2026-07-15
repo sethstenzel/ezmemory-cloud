@@ -1,0 +1,17 @@
+<div class="topic-row-wrap">
+  <div class="topic-row">
+    <span class="topic-name">📁 {{ item.topic.name }}</span>
+    <span class="topic-due muted">{{ item.due }} due</span>
+    <button class="btn-secondary topic-practice-btn" @click="practicing = true"
+            hx-get="{% url 'queue_next' %}?topic={{ item.topic.pk }}"
+            hx-target="#review-area" hx-swap="innerHTML"
+            {% if not item.due %}disabled{% endif %}>Practice</button>
+  </div>
+  {% if item.children %}
+    <div class="topic-children">
+      {% for child in item.children %}
+        {% include "flashcards/_topic_row.html" with item=child %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

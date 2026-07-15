@@ -45,8 +45,8 @@ python -m venv .venv
 | Where | What |
 | ----- | ---- |
 | **Today** | Auto-created daily note for quick capture |
-| **All Documents** | Documents and folders |
-| **Practice** | Spaced-repetition review queue (space to reveal, 1–4 to rate) |
+| **All Documents** | Documents and topics (nestable; drag to organize) |
+| **Practice** | Review sessions run in a modal — practice everything, or a single topic/subtopic (space to reveal, 1–4 to rate) |
 | **Cards** | Every flashcard and its schedule |
 | **Search** | Live search across titles and note text |
 | **Tutorials** | In-app help articles (seeded) |
@@ -102,7 +102,7 @@ so PDFs, images, and video are rejected at the framework level. On top of that:
 
 - Request bodies are capped at 256 KB (`DATA_UPLOAD_MAX_MEMORY_SIZE`).
 - Per-account quotas (all tunable in `ezmemory/settings.py`): 10,000 bullets,
-  1,000 documents, 100 folders, 2,000 characters per bullet, 200 per title.
+  1,000 documents, 100 topics, 2,000 characters per bullet, 200 per title.
   Worst case is roughly ~20–40 MB of text per account.
 - Review history is pruned to the 10 most recent reviews per card.
 - Signups are throttled to 5 accounts per source IP per hour.

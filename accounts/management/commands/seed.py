@@ -221,19 +221,19 @@ The queue header shows how many cards are due, how many of those are brand new, 
             {
                 "title": "Organizing Your Knowledge",
                 "emoji": "🗂️",
-                "description": "Documents, folders, daily notes, references, tags, and search.",
+                "description": "Documents, topics, daily notes, references, tags, and search.",
                 "articles": [
                     (
-                        "Documents, Folders & Daily Notes",
+                        "Documents, Topics & Daily Notes",
                         "Where notes live and how to keep them tidy.",
                         """
 ## Documents
 
-Create a document with the **+** button in the sidebar. Click a document's title to rename it, and use the **⋯** menu to move it into a folder or delete it.
+Create a document with the **+** button in the sidebar. Click a document's title to rename it, and use the **⋯** menu to move it into a topic or delete it.
 
-## Folders
+## Topics
 
-Folders group documents in the sidebar. Deleting a folder keeps its documents — they just move out of the folder.
+Topics group documents in the sidebar, and can be nested inside each other for subtopics — drag one topic onto another to nest it. Click a topic to select it: new documents and topics are created inside the selected topic. Deleting a topic keeps its contents — they move up a level. You can practice the flashcards of a single topic (including its subtopics) from the Practice page.
 
 ## Daily notes
 
@@ -393,7 +393,7 @@ Once a week, skim your recent daily notes. Anything worth keeping gets a `[[refe
 
 ## Why this works
 
-You never lose a thought to "I'll file it later," and you never build elaborate empty folder structures for notes that don't exist yet. The structure you end up with reflects what you actually think about — because it grew out of what you actually wrote down.
+You never lose a thought to "I'll file it later," and you never build elaborate empty topic structures for notes that don't exist yet. The structure you end up with reflects what you actually think about — because it grew out of what you actually wrote down.
 """,
             },
         ]

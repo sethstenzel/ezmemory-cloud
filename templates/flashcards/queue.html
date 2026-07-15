@@ -1,10 +1,40 @@
 {% extends "app_base.html" %}
 {% block title %}Practice — ezmemory.cloud{% endblock %}
 {% block content %}
-<div class="page queue-page">
+<div class="page queue-page" x-data="{ practicing: false }"
+     @keydown.escape.window="if (practicing) { practicing = false; location.reload(); }">
   <h1>🧠 Practice</h1>
-  <div id="review-area" hx-get="{% url 'queue_next' %}" hx-trigger="load" hx-swap="innerHTML">
-    <p class="muted">Loading queue…</p>
+  <div class="queue-stats">
+    <span title="Cards due now"><strong>{{ stats.due_count }}</strong> due</span>
+    <span title="New cards in the due pile"><strong>{{ stats.new_count }}</strong> new</span>
+    <span title="Reviews completed today"><strong>{{ stats.reviewed_today }}</strong> done today</span>
+    <span title="All cards"><strong>{{ stats.total_cards }}</strong> total</span>
+  </div>
+
+  <button class="btn-primary start-practice" @click="practicing = true"
+          hx-get="{% url 'queue_next' %}" hx-target="#review-area" hx-swap="innerHTML"
+          {% if not stats.due_count %}disabled{% endif %}>
+    ▶ Practice everything{% if stats.due_count %} ({{ stats.due_count }} due){% endif %}
+  </button>
+
+  {% if topic_tree %}
+    <h2 class="topics-heading">Practice by topic</h2>
+    <div class="topic-list">
+      {% for item in topic_tree %}
+        {% include "flashcards/_topic_row.html" with item=item %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="muted">Organize documents into topics (sidebar 🗀) to practice one subject at a time.</p>
+  {% endif %}
+
+  <div class="modal-overlay" x-show="practicing" x-cloak
+       @click.self="practicing = false; location.reload()">
+    <div class="modal" role="dialog" aria-label="Practice session">
+      <button class="modal-close icon-btn" title="End session"
+              @click="practicing = false; location.reload()">✕</button>
+      <div id="review-area"><p class="muted">Loading…</p></div>
+    </div>
   </div>
 </div>
 {% endblock %}
