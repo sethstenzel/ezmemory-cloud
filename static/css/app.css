@@ -97,6 +97,9 @@ input, select, textarea { font: inherit; color: inherit; }
 }
 .folder-toggle:hover { background: rgba(255, 255, 255, .07); }
 .folder-docs { padding-left: 1.2rem; }
+.folder-children > .sidebar-folder { margin-left: 1.2rem; }
+[data-folder-id] { cursor: grab; }
+[data-folder-id].dragging { opacity: .45; }
 .sidebar-footer { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: .7rem; margin-top: .7rem; }
 .sidebar-footer a { padding: .22rem .5rem; border-radius: 6px; }
 .logout-form { display: flex; justify-content: space-between; align-items: center; padding: .3rem .5rem 0; }

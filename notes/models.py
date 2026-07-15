@@ -4,6 +4,9 @@ from django.db import models
 
 class Folder(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="folders")
+    parent = models.ForeignKey(
+        "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="subfolders"
+    )
     name = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -13,6 +16,13 @@ class Folder(models.Model):
 
     def __str__(self):
         return self.name
+
+    def ancestors(self):
+        node, seen = self.parent, set()
+        while node and node.pk not in seen:
+            seen.add(node.pk)
+            yield node
+            node = node.parent
 
 
 class Document(models.Model):

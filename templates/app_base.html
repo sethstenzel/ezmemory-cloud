@@ -33,17 +33,8 @@
                x-effect="if (newFolder) $nextTick(() => $el.focus())">
       </form>
 
-      {% for folder in sidebar_folders %}
-        <div class="sidebar-folder" x-data="{ open: true }" data-drop-folder="{{ folder.pk }}">
-          <button class="folder-toggle" @click="open = !open">
-            <span x-text="open ? '▾' : '▸'"></span> 📁 {{ folder.name }}
-          </button>
-          <div class="folder-docs" x-show="open">
-            {% for doc in folder.documents.all %}
-              {% if not doc.is_daily %}<a draggable="true" data-doc-id="{{ doc.pk }}" href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>{% endif %}
-            {% endfor %}
-          </div>
-        </div>
+      {% for folder in sidebar_folder_tree %}
+        {% include "_sidebar_folder.html" with folder=folder %}
       {% endfor %}
       {% for doc in sidebar_documents %}
         <a class="sidebar-doc" draggable="true" data-doc-id="{{ doc.pk }}" href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>

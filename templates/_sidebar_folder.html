@@ -1,0 +1,15 @@
+<div class="sidebar-folder" x-data="{ open: true }" data-drop-folder="{{ folder.pk }}">
+  <button class="folder-toggle" draggable="true" data-folder-id="{{ folder.pk }}" @click="open = !open">
+    <span x-text="open ? '▾' : '▸'"></span> 📁 {{ folder.name }}
+  </button>
+  <div class="folder-children" x-show="open">
+    {% for sub in folder.subfolders.all %}
+      {% include "_sidebar_folder.html" with folder=sub %}
+    {% endfor %}
+    <div class="folder-docs">
+      {% for doc in folder.documents.all %}
+        {% if not doc.is_daily %}<a draggable="true" data-doc-id="{{ doc.pk }}" href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>{% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -19,8 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // Drag a sidebar document onto a folder (or the Documents section, to
-  // un-file it). Drops POST to the document's move endpoint, then reload.
-  var draggedDocId = null;
+  // un-file it), and drag folders into folders to nest them. Drops POST to
+  // the matching move endpoint, then reload.
+  var drag = null; // {kind: 'doc'|'folder', id, el}
 
   function clearDropHighlights() {
     document.querySelectorAll('.drop-hover').forEach(function (el) {
@@ -28,24 +29,39 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  function validTarget(evt) {
+    if (!drag) return null;
+    var target = evt.target.closest && evt.target.closest('[data-drop-folder]');
+    if (!target) return null;
+    if (drag.kind === 'folder') {
+      // A folder can't drop onto itself or anything inside its own subtree.
+      var ownBox = drag.el.closest('.sidebar-folder');
+      if (ownBox && (target === ownBox || ownBox.contains(target))) return null;
+    }
+    return target;
+  }
+
   document.addEventListener('dragstart', function (evt) {
-    var doc = evt.target.closest && evt.target.closest('[data-doc-id]');
-    if (!doc) return;
-    draggedDocId = doc.dataset.docId;
+    if (!evt.target.closest) return;
+    var doc = evt.target.closest('[data-doc-id]');
+    var folder = doc ? null : evt.target.closest('[data-folder-id]');
+    if (!doc && !folder) return;
+    drag = doc
+      ? { kind: 'doc', id: doc.dataset.docId, el: doc }
+      : { kind: 'folder', id: folder.dataset.folderId, el: folder };
     evt.dataTransfer.effectAllowed = 'move';
-    try { evt.dataTransfer.setData('text/plain', draggedDocId); } catch (e) { /* IE quirk */ }
-    doc.classList.add('dragging');
+    try { evt.dataTransfer.setData('text/plain', drag.id); } catch (e) { /* IE quirk */ }
+    drag.el.classList.add('dragging');
   });
 
-  document.addEventListener('dragend', function (evt) {
-    draggedDocId = null;
+  document.addEventListener('dragend', function () {
+    if (drag) drag.el.classList.remove('dragging');
+    drag = null;
     clearDropHighlights();
-    if (evt.target.classList) evt.target.classList.remove('dragging');
   });
 
   document.addEventListener('dragover', function (evt) {
-    if (!draggedDocId) return;
-    var target = evt.target.closest && evt.target.closest('[data-drop-folder]');
+    var target = validTarget(evt);
     if (!target) return;
     evt.preventDefault();
     evt.dataTransfer.dropEffect = 'move';
@@ -56,20 +72,24 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   document.addEventListener('drop', function (evt) {
-    var target = evt.target.closest && evt.target.closest('[data-drop-folder]');
-    if (!target || !draggedDocId) return;
+    var target = validTarget(evt);
+    if (!target) return;
     evt.preventDefault();
-    var docId = draggedDocId;
-    draggedDocId = null;
+    var kind = drag.kind, id = drag.id;
+    drag = null;
     clearDropHighlights();
     var meta = document.querySelector('meta[name="csrf-token"]');
-    fetch('/d/' + docId + '/move/', {
+    var url = kind === 'doc' ? '/d/' + id + '/move/' : '/folders/' + id + '/move/';
+    var field = kind === 'doc' ? 'folder' : 'parent';
+    var body = {};
+    body[field] = target.dataset.dropFolder;
+    fetch(url, {
       method: 'POST',
       headers: {
         'X-CSRFToken': meta ? meta.content : '',
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({ folder: target.dataset.dropFolder }),
+      body: new URLSearchParams(body),
     }).then(function () { window.location.reload(); });
   });
 

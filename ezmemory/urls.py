@@ -42,6 +42,7 @@ urlpatterns = [
     path("d/<int:pk>/move/", notes_views.document_move, name="document_move"),
     path("documents/", notes_views.document_list, name="document_list"),
     path("folders/create/", notes_views.folder_create, name="folder_create"),
+    path("folders/<int:pk>/move/", notes_views.folder_move, name="folder_move"),
     path("folders/<int:pk>/delete/", notes_views.folder_delete, name="folder_delete"),
 
     # Outline node operations (htmx)

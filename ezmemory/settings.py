@@ -178,7 +178,7 @@ EZMEMORY_MAX_DOC_TITLE_CHARS = 200
 EZMEMORY_SIGNUPS_PER_IP_PER_HOUR = 5
 
 # Bump on any CSS/JS change so browsers can't serve stale cached assets.
-EZMEMORY_ASSET_VERSION = "4"
+EZMEMORY_ASSET_VERSION = "5"
 
 # Push notifications (Web Push / VAPID). Keys are auto-generated on first use
 # into BASE_DIR/vapid_private_key.pem (gitignored).

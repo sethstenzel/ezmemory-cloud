@@ -75,7 +75,11 @@ def save_text(node, request):
 def sidebar_context(request):
     folders = Folder.objects.filter(user=request.user).prefetch_related("documents")
     loose_docs = Document.objects.filter(user=request.user, folder=None, is_daily=False)
-    return {"sidebar_folders": folders, "sidebar_documents": loose_docs}
+    return {
+        "sidebar_folders": folders,  # flat, for selects and the documents page
+        "sidebar_folder_tree": [f for f in folders if f.parent_id is None],
+        "sidebar_documents": loose_docs,
+    }
 
 
 # ---------------------------------------------------------------- pages
@@ -214,6 +218,24 @@ def folder_create(request):
             messages.error(request, limits.FOLDER_QUOTA_MESSAGE)
         else:
             Folder.objects.get_or_create(user=request.user, name=name)
+    return redirect(request.POST.get("next") or "document_list")
+
+
+@login_required
+@require_POST
+def folder_move(request, pk):
+    folder = get_object_or_404(Folder, pk=pk, user=request.user)
+    parent_id = request.POST.get("parent") or None
+    if parent_id:
+        parent = get_object_or_404(Folder, pk=parent_id, user=request.user)
+        if parent.pk == folder.pk or any(a.pk == folder.pk for a in parent.ancestors()):
+            return quota_denied("A folder can't be moved into itself or one of its subfolders.")
+        if sum(1 for _ in parent.ancestors()) >= 9:
+            return quota_denied("Folders can't be nested this deep.")
+        folder.parent = parent
+    else:
+        folder.parent = None
+    folder.save(update_fields=["parent"])
     return redirect(request.POST.get("next") or "document_list")
 
 
