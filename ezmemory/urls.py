@@ -48,6 +48,7 @@ urlpatterns = [
     # Outline node operations (htmx)
     path("n/<int:pk>/save/", notes_views.node_save, name="node_save"),
     path("n/<int:pk>/create/", notes_views.node_create, name="node_create"),
+    path("n/<int:pk>/bulk/", notes_views.node_bulk_create, name="node_bulk_create"),
     path("n/<int:pk>/indent/", notes_views.node_indent, name="node_indent"),
     path("n/<int:pk>/outdent/", notes_views.node_outdent, name="node_outdent"),
     path("n/<int:pk>/delete/", notes_views.node_delete, name="node_delete"),

@@ -283,6 +283,48 @@ def node_create(request, pk):
 
 @login_required
 @require_POST
+def node_bulk_create(request, pk):
+    """Paste support: add one bullet per non-empty line, after the given node.
+
+    If the current bullet is empty, the first line fills it instead.
+    """
+    node = get_node(request, pk)
+    save_text(node, request)
+    node.refresh_from_db()
+
+    lines = [
+        limits.clamp_node_text(line.strip())
+        for line in request.POST.get("lines", "").splitlines()
+        if line.strip()
+    ]
+    if not lines:
+        return outline_response(request, node.document, focus_id=node.id)
+
+    fill_current = not node.text.strip()
+    new_count = len(lines) - (1 if fill_current else 0)
+    if new_count > limits.node_quota_left(request.user):
+        return quota_denied(limits.NODE_QUOTA_MESSAGE)
+
+    if fill_current:
+        node.text = lines.pop(0)
+        node.save(update_fields=["text", "updated_at"])
+        sync_node_cards(node)
+
+    Node.objects.filter(
+        document=node.document, parent=node.parent, position__gt=node.position
+    ).update(position=models.F("position") + len(lines))
+    focus = node
+    for offset, line in enumerate(lines, start=1):
+        focus = Node.objects.create(
+            document=node.document, parent=node.parent, position=node.position + offset, text=line
+        )
+        sync_node_cards(focus)
+    node.document.save(update_fields=["updated_at"])
+    return outline_response(request, node.document, focus_id=focus.id)
+
+
+@login_required
+@require_POST
 def node_indent(request, pk):
     node = get_node(request, pk)
     save_text(node, request)

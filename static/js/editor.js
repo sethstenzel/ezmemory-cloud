@@ -122,6 +122,31 @@
     }
   });
 
+  // Pasting a multi-line block into a bullet adds one bullet per line.
+  document.addEventListener('paste', function (evt) {
+    var input = evt.target.closest && evt.target.closest('.node-input');
+    if (!input) return;
+    var data = evt.clipboardData || window.clipboardData;
+    var text = data ? data.getData('text') : '';
+    if (!text || text.indexOf('\n') === -1) return;
+    var lines = text.split(/\r?\n/).filter(function (l) { return l.trim() !== ''; });
+    if (lines.length < 2) return; // effectively single-line: let the normal paste happen
+    evt.preventDefault();
+    if (busy) return;
+    busy = true;
+    suppressBlur = true;
+    clearTimeout(saveTimer);
+    htmx.ajax('POST', input.dataset.bulkUrl, {
+      target: '#outline',
+      swap: 'outerHTML',
+      values: { text: input.value, lines: text },
+      headers: { 'X-CSRFToken': csrf() },
+    }).finally(function () {
+      busy = false;
+      suppressBlur = false;
+    });
+  });
+
   document.addEventListener('input', function (evt) {
     var input = evt.target.closest && evt.target.closest('.node-input');
     if (!input) return;

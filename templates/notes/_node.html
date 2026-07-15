@@ -14,6 +14,7 @@
               data-id="{{ item.node.id }}"
               data-save-url="{% url 'node_save' item.node.id %}"
               data-create-url="{% url 'node_create' item.node.id %}"
+              data-bulk-url="{% url 'node_bulk_create' item.node.id %}"
               data-indent-url="{% url 'node_indent' item.node.id %}"
               data-outdent-url="{% url 'node_outdent' item.node.id %}"
               data-delete-url="{% url 'node_delete' item.node.id %}">{{ item.node.text }}</textarea>
