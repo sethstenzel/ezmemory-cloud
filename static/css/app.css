@@ -87,7 +87,10 @@ input, select, textarea { font: inherit; color: inherit; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .sidebar-doc:hover, .folder-docs a:hover { background: rgba(255, 255, 255, .07); }
-.sidebar-folder { margin: .1rem 0; }
+.sidebar-folder { margin: .1rem 0; border-radius: 6px; }
+[data-doc-id] { cursor: grab; }
+[data-doc-id].dragging { opacity: .45; }
+.drop-hover { outline: 2px dashed #9aa4ff; outline-offset: -2px; background: rgba(154, 164, 255, .08); }
 .folder-toggle {
   background: none; border: none; color: var(--sidebar-ink);
   padding: .22rem .5rem; width: 100%; text-align: left; border-radius: 6px;

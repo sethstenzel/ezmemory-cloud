@@ -12,7 +12,7 @@
       <a href="{% url 'search' %}">🔍 Search</a>
     </nav>
 
-    <div class="sidebar-section">
+    <div class="sidebar-section" data-drop-folder="" title="Drop a document here to move it out of its folder">
       <div class="sidebar-heading">
         <span>Documents</span>
         <span class="sidebar-actions">
@@ -34,19 +34,19 @@
       </form>
 
       {% for folder in sidebar_folders %}
-        <div class="sidebar-folder" x-data="{ open: true }">
+        <div class="sidebar-folder" x-data="{ open: true }" data-drop-folder="{{ folder.pk }}">
           <button class="folder-toggle" @click="open = !open">
             <span x-text="open ? '▾' : '▸'"></span> 📁 {{ folder.name }}
           </button>
           <div class="folder-docs" x-show="open">
             {% for doc in folder.documents.all %}
-              {% if not doc.is_daily %}<a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>{% endif %}
+              {% if not doc.is_daily %}<a draggable="true" data-doc-id="{{ doc.pk }}" href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>{% endif %}
             {% endfor %}
           </div>
         </div>
       {% endfor %}
       {% for doc in sidebar_documents %}
-        <a class="sidebar-doc" href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>
+        <a class="sidebar-doc" draggable="true" data-doc-id="{{ doc.pk }}" href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>
       {% endfor %}
     </div>
 

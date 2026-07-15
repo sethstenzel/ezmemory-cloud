@@ -18,6 +18,61 @@ document.addEventListener('DOMContentLoaded', function () {
     paintArt(evt.detail.target || document);
   });
 
+  // Drag a sidebar document onto a folder (or the Documents section, to
+  // un-file it). Drops POST to the document's move endpoint, then reload.
+  var draggedDocId = null;
+
+  function clearDropHighlights() {
+    document.querySelectorAll('.drop-hover').forEach(function (el) {
+      el.classList.remove('drop-hover');
+    });
+  }
+
+  document.addEventListener('dragstart', function (evt) {
+    var doc = evt.target.closest && evt.target.closest('[data-doc-id]');
+    if (!doc) return;
+    draggedDocId = doc.dataset.docId;
+    evt.dataTransfer.effectAllowed = 'move';
+    try { evt.dataTransfer.setData('text/plain', draggedDocId); } catch (e) { /* IE quirk */ }
+    doc.classList.add('dragging');
+  });
+
+  document.addEventListener('dragend', function (evt) {
+    draggedDocId = null;
+    clearDropHighlights();
+    if (evt.target.classList) evt.target.classList.remove('dragging');
+  });
+
+  document.addEventListener('dragover', function (evt) {
+    if (!draggedDocId) return;
+    var target = evt.target.closest && evt.target.closest('[data-drop-folder]');
+    if (!target) return;
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'move';
+    document.querySelectorAll('.drop-hover').forEach(function (el) {
+      if (el !== target) el.classList.remove('drop-hover');
+    });
+    target.classList.add('drop-hover');
+  });
+
+  document.addEventListener('drop', function (evt) {
+    var target = evt.target.closest && evt.target.closest('[data-drop-folder]');
+    if (!target || !draggedDocId) return;
+    evt.preventDefault();
+    var docId = draggedDocId;
+    draggedDocId = null;
+    clearDropHighlights();
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    fetch('/d/' + docId + '/move/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': meta ? meta.content : '',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({ folder: target.dataset.dropFolder }),
+    }).then(function () { window.location.reload(); });
+  });
+
   // Quota and validation errors from htmx endpoints arrive as plain-text 4xx
   // responses; show them as a temporary toast.
   var toastTimer = null;
