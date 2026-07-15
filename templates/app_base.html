@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 <div class="app-shell">
-  <aside class="sidebar" x-data="{ newDoc: false, newFolder: false }">
+  <aside class="sidebar" x-data="{ newDoc: false, newFolder: false, selectedFolder: '{% if document.folder_id %}{{ document.folder_id }}{% endif %}' }">
     <div class="sidebar-brand"><a href="{% url 'home' %}">🧠 ezmemory.cloud</a></div>
 
     <nav class="sidebar-nav">
@@ -14,22 +14,26 @@
 
     <div class="sidebar-section" data-drop-folder="" title="Drop a document here to move it out of its folder">
       <div class="sidebar-heading">
-        <span>Documents</span>
+        <span class="heading-clear" title="Click to target the top level" @click="selectedFolder = ''">Documents</span>
         <span class="sidebar-actions">
-          <button class="icon-btn" title="New document" @click="newDoc = !newDoc">+</button>
-          <button class="icon-btn" title="New folder" @click="newFolder = !newFolder">🗀</button>
+          <button class="icon-btn" title="New document (created in the selected folder)" @click="newDoc = !newDoc">+</button>
+          <button class="icon-btn" title="New folder (created in the selected folder)" @click="newFolder = !newFolder">🗀</button>
         </span>
       </div>
 
       <form method="post" action="{% url 'document_create' %}" x-show="newDoc" x-cloak class="sidebar-form">
         {% csrf_token %}
-        <input name="title" placeholder="Document title…" autocomplete="off"
+        <input type="hidden" name="folder" :value="selectedFolder">
+        <input name="title" autocomplete="off"
+               :placeholder="selectedFolder ? 'Document title (in selected folder)…' : 'Document title…'"
                x-effect="if (newDoc) $nextTick(() => $el.focus())">
       </form>
       <form method="post" action="{% url 'folder_create' %}" x-show="newFolder" x-cloak class="sidebar-form">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <input name="name" placeholder="Folder name…" autocomplete="off"
+        <input type="hidden" name="parent" :value="selectedFolder">
+        <input name="name" autocomplete="off"
+               :placeholder="selectedFolder ? 'Folder name (in selected folder)…' : 'Folder name…'"
                x-effect="if (newFolder) $nextTick(() => $el.focus())">
       </form>
 

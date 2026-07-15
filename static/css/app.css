@@ -88,6 +88,15 @@ input, select, textarea { font: inherit; color: inherit; }
 }
 .sidebar-doc:hover, .folder-docs a:hover { background: rgba(255, 255, 255, .07); }
 .sidebar-folder { margin: .1rem 0; border-radius: 6px; }
+.folder-row { display: flex; align-items: center; }
+.folder-row .folder-toggle { flex: 1; min-width: 0; }
+.folder-delete-form { display: none; }
+.folder-row:hover .folder-delete-form { display: block; }
+.folder-x { color: #8b93a7; font-size: .75rem; padding: 0 .35rem; }
+.folder-x:hover { color: #ff8a8a; background: rgba(255, 138, 138, .12); }
+.folder-selected { background: rgba(154, 164, 255, .18); color: #fff; }
+.heading-clear { cursor: pointer; }
+.heading-clear:hover { color: #fff; }
 [data-doc-id] { cursor: grab; }
 [data-doc-id].dragging { opacity: .45; }
 .drop-hover { outline: 2px dashed #9aa4ff; outline-offset: -2px; background: rgba(154, 164, 255, .08); }

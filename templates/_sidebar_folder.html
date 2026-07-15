@@ -1,7 +1,17 @@
 <div class="sidebar-folder" x-data="{ open: true }" data-drop-folder="{{ folder.pk }}">
-  <button class="folder-toggle" draggable="true" data-folder-id="{{ folder.pk }}" @click="open = !open">
-    <span x-text="open ? '▾' : '▸'"></span> 📁 {{ folder.name }}
-  </button>
+  <div class="folder-row">
+    <button class="folder-toggle" draggable="true" data-folder-id="{{ folder.pk }}"
+            :class="selectedFolder === '{{ folder.pk }}' ? 'folder-selected' : ''"
+            @click="open = !open; selectedFolder = selectedFolder === '{{ folder.pk }}' ? '' : '{{ folder.pk }}'">
+      <span x-text="open ? '▾' : '▸'"></span> 📁 {{ folder.name }}
+    </button>
+    <form method="post" action="{% url 'folder_delete' folder.pk %}" class="folder-delete-form"
+          onsubmit="return confirm('Delete folder “{{ folder.name }}”? Documents and subfolders inside move up a level.')">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <button type="submit" class="icon-btn folder-x" title="Delete folder">✕</button>
+    </form>
+  </div>
   <div class="folder-children" x-show="open">
     {% for sub in folder.subfolders.all %}
       {% include "_sidebar_folder.html" with folder=sub %}

@@ -217,7 +217,11 @@ def folder_create(request):
         if limits.folder_quota_left(request.user) <= 0:
             messages.error(request, limits.FOLDER_QUOTA_MESSAGE)
         else:
-            Folder.objects.get_or_create(user=request.user, name=name)
+            parent_id = request.POST.get("parent") or None
+            parent = None
+            if parent_id:
+                parent = get_object_or_404(Folder, pk=parent_id, user=request.user)
+            Folder.objects.get_or_create(user=request.user, name=name, defaults={"parent": parent})
     return redirect(request.POST.get("next") or "document_list")
 
 
@@ -243,8 +247,13 @@ def folder_move(request, pk):
 @require_POST
 def folder_delete(request, pk):
     folder = get_object_or_404(Folder, pk=pk, user=request.user)
-    folder.documents.update(folder=None)
+    # Contents survive: documents and subfolders move up to the deleted folder's level.
+    folder.documents.update(folder=folder.parent)
+    folder.subfolders.update(parent=folder.parent)
     folder.delete()
+    next_url = request.POST.get("next", "")
+    if next_url.startswith("/"):
+        return redirect(next_url)
     return redirect("document_list")
 
 
