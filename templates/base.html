@@ -8,12 +8,12 @@
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="{% static 'img/icon.svg' %}" type="image/svg+xml">
   <meta name="theme-color" content="#4f46e5">
-  <link rel="stylesheet" href="{% static 'css/app.css' %}">
-  <script src="{% static 'js/htmx.min.js' %}" defer></script>
-  <script src="{% static 'js/app.js' %}" defer></script>
-  <script src="{% static 'js/editor.js' %}" defer></script>
-  <script src="{% static 'js/push.js' %}" defer></script>
-  <script src="{% static 'js/alpine.min.js' %}" defer></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v={{ ASSET_VERSION }}">
+  <script src="{% static 'js/htmx.min.js' %}?v={{ ASSET_VERSION }}" defer></script>
+  <script src="{% static 'js/app.js' %}?v={{ ASSET_VERSION }}" defer></script>
+  <script src="{% static 'js/editor.js' %}?v={{ ASSET_VERSION }}" defer></script>
+  <script src="{% static 'js/push.js' %}?v={{ ASSET_VERSION }}" defer></script>
+  <script src="{% static 'js/alpine.min.js' %}?v={{ ASSET_VERSION }}" defer></script>
 </head>
 <body>
 {% block body %}{% endblock %}

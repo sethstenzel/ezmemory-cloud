@@ -9,3 +9,8 @@ dependencies = [
     "markdown>=3.10",
     "pywebpush>=2.3.0",
 ]
+
+[dependency-groups]
+dev = [
+    "playwright>=1.61.0",
+]

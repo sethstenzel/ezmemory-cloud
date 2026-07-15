@@ -74,6 +74,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "ezmemory.context_processors.asset_version",
             ],
         },
     },
@@ -175,6 +176,9 @@ EZMEMORY_MAX_DOC_TITLE_CHARS = 200
 
 # Signup throttling: max new accounts per source IP per hour.
 EZMEMORY_SIGNUPS_PER_IP_PER_HOUR = 5
+
+# Bump on any CSS/JS change so browsers can't serve stale cached assets.
+EZMEMORY_ASSET_VERSION = "4"
 
 # Push notifications (Web Push / VAPID). Keys are auto-generated on first use
 # into BASE_DIR/vapid_private_key.pem (gitignored).
